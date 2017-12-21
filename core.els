@@ -1,0 +1,289 @@
+rem begin %_ end opdef
+
+begin
+       .----.-.
+      /    ( o \
+     '|  __ ` ||
+      |||  ||| -'
+    The Elephant Stack Core Library
+    Author: Jack Rosenthal
+end rem
+
+begin
+    The dup operator copies the top item on the stack
+end rem
+
+dup begin
+    %_ $_ $_
+end opdef
+
+begin
+    The div operator divides the second item by the top item
+end rem
+div begin
+    inv mul
+end opdef
+
+begin
+    The swap operator swaps the top two elements
+end rem
+swap begin
+    %1 %2 $1 $2
+end opdef
+
+begin
+    The divmod operator pushes first the integer division then the remainder
+end rem
+divmod begin
+    %d $d div sep $d mul round
+end opdef
+
+begin
+    Modulus operator
+end rem
+mod begin
+    divmod %r %q $r
+end opdef
+
+begin
+    The neg operator negates the top item on the stack
+end rem
+neg begin
+    -1 mul
+end opdef
+
+begin
+    floor, ceiling, round
+end rem
+floor begin
+    sep %_
+end opdef
+
+ceil begin
+    sep 0 0 0 1 test add
+end opdef
+
+round begin
+    sep 0.5 0 1 1 test add
+end opdef
+
+begin
+    b e range
+    Generate a closure with a sequence of numbers from b to e
+end rem
+range begin
+    %e %b $b $e
+    begin
+        $b $e -1 add range $e add
+    end
+    begin
+        begin end $b add
+    end
+    begin
+        $b $e 1 add range $e add
+    end
+    test call
+end opdef
+
+begin
+    reverse_h: helper function for reverse
+    clo begin end reverse_h -> begin end reverse_clo
+end rem
+reverse_h begin
+    %r %o
+    $o begin end
+    begin
+        $o next
+        $r swap
+        add
+        reverse_h
+    end
+    dup
+    begin
+        $o $r
+    end
+    swap
+    test call
+end opdef
+
+begin
+    reverse: reverse the closure on the top of the stack
+    clo reverse
+end rem
+reverse begin
+    begin end reverse_h %r %_ $r
+end opdef
+
+begin
+    map_h: helper function for map
+    f clo begin end map_h -> f begin end clo_mapped_with_f
+end rem
+map_h begin
+    %m %o %f
+    $o begin end
+    begin
+        begin we're not done mapping yet end rem
+        $f
+        $o next
+        $f call
+        $m add
+        map_h
+    end
+    dup
+    begin
+        $f $o $m
+    end
+    swap
+    test call
+end opdef
+
+begin
+    map: apply a closure accross a sequence of elements
+    clo f map -> clo_mapped_with_f
+end rem
+map begin
+    %f %c
+    $f $c begin end map_h
+    %m %_ %_
+    $m
+end opdef
+
+begin
+    reduce_h: helper for reduce function
+    clo v f reduce_h -> clo_next v_next f
+end rem
+reduce_h begin
+    %f %v %clo
+    $clo begin end
+    begin
+        $clo next
+        $v
+        $f call
+        $f reduce_h
+    end
+    dup
+    begin
+        $clo $v $f
+    end
+    swap
+    test call
+end opdef
+
+begin
+    reduce: functional reduction
+    clo f reduce -> v
+end rem
+reduce begin
+    %f %clo
+    $clo next $f reduce_h
+    %_ %v %_
+    $v
+end opdef
+
+begin
+    sum: sum a closure
+    clo sum -> v
+end rem
+sum begin
+    begin add end reduce
+end opdef
+
+begin
+    product: reduce a closure to its product
+    clo product -> v
+end rem
+product begin
+    begin mul end reduce
+end opdef
+
+begin
+    split: chop a closure in half, the first being larger if odd
+end rem
+split begin
+    begin end begin end split_h
+end opdef
+
+begin
+    split_h: helper recursive fuction for split
+    clo_in_progress building_left building_right split -> left right
+end rem
+split_h begin
+    %r %l %p
+    $p begin end
+    begin
+        $p fnext next %t %p %b
+            $p
+            $l $b add
+            $t $r add
+        split_h
+    end
+    dup
+    begin
+        $l $r
+    end
+    swap
+    test call
+end opdef
+
+begin
+    merge: merge two (assumed to be sorted) lists to create one sorted list
+end rem
+merge begin
+    begin end merge_h
+end opdef
+
+begin
+    merge_h: recursive helper for merge
+    clo1 clo2 bulding_clo -> merged_clo
+end rem
+merge_h begin
+    %b %2 %1
+    $1 tail $2 tail
+    begin
+        $1 $2 next $b add merge_h
+    end
+    dup
+    begin
+        $2 $1 next $b add merge_h
+    end
+    test call
+end opdef
+
+begin
+    sort: sort a closure
+    implemented as a MergeSort
+    clo sort -> clo_sorted
+    not working quite yet... still a work in progress
+end rem
+sort begin
+    %clo
+    $clo len 2
+    begin
+        begin length is <2, we're sorted end rem
+        $clo
+    end
+    begin
+        begin sort the two halves and merge end rem
+        $clo split sort sort
+        merge
+    end
+    dup
+    test call
+end opdef
+
+begin
+    tail: grab the last element
+    clo tail -> v
+end rem
+tail begin
+    next %t %_ $t
+end opdef
+
+begin
+    head: grab the first element
+    clo head -> v
+end rem
+head begin
+    fnext %_
+end opdef
+

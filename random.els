@@ -1,0 +1,36 @@
+core load
+begin
+    pRNG library
+    Author: Jack Rosenthal
+end rem
+
+srand begin
+    %seed
+    begin random_seed end begin end $seed add opdef
+end opdef
+
+1 srand
+
+rand begin
+    random_seed 16807 mul
+    2147483647 mod %result
+    $result srand
+    $result
+end opdef
+
+Uniform begin
+    %up %low
+    begin rand 2147483647 div end
+    $up $low neg add add
+    begin mul end add
+    $low add
+    begin add end add
+end opdef
+
+Equilikely begin
+    %up %low
+    $low $up 1 add Uniform
+    begin floor end add
+end opdef
+
+

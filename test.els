@@ -1,0 +1,31 @@
+begin
+    This is an initial test of the Elephant Stack programming language
+    It should print the first 13 fibonacci numbers
+    Author: Jack Rosenthal
+end rem
+
+begin
+    %n $n 2
+    begin $n end
+    begin
+        $n -1 add !fib
+        $n -2 add !fib
+        add
+    end
+    %dup $dup $dup
+    test call
+end %fib
+
+0 !fib
+1 !fib
+2 !fib
+3 !fib
+4 !fib
+5 !fib
+6 !fib
+7 !fib
+8 !fib
+9 !fib
+10 !fib
+11 !fib
+12 !fib

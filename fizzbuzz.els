@@ -1,0 +1,25 @@
+core load
+
+100 1 range
+begin
+    %n
+    begin end
+
+    $n 3 mod 0
+    begin end
+    begin Fizz add end
+    begin end
+    test call
+
+    $n 5 mod 0
+    begin end
+    begin Buzz add end
+    begin end
+    test call
+
+    dup begin end
+    begin end
+    begin $n add end
+    begin end
+    test call
+end map print

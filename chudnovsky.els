@@ -1,0 +1,25 @@
+core load
+math load
+
+begin
+    Happy Pi Day!
+    -Jack 2017-03-14
+end rem
+
+0 10 range
+begin
+    %k
+    begin
+        $k 2 mod 1 1 -1 0 test
+        6 $k mul factorial
+        13591409 545140134 $k mul add
+    end call mul mul
+    begin
+        3 $k mul factorial
+        $k factorial 3 ipow
+        640320 3 $k mul ipow
+        640320 3 ipow sqrt
+    end call mul mul mul
+    div
+end
+map sum 12 mul inv print

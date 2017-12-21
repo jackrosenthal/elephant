@@ -1,0 +1,23 @@
+core load
+
+begin
+    The Elephant Stack language features dynamic scoping
+    Author: Jack Rosenthal
+end rem
+
+test1 begin
+    $x print
+end opdef
+
+test2 begin
+    5 %x
+    test1
+end opdef
+
+test3 begin
+    10 %x
+    test1
+end opdef
+
+test2
+test3

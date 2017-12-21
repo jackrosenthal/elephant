@@ -1,0 +1,73 @@
+core load
+begin
+    The Elephant Standard Math Library
+    "the library that does kinda complicated math
+        algorithms and has some constants"
+    Author: Jack Rosenthal
+end rem
+
+pi begin 3.141592653589793 end opdef
+e begin 2.718281828459045 end opdef
+
+factorial begin
+    %n
+    $n 0
+    begin 1 end
+    dup
+    begin $n -1 add factorial $n mul end
+    test call
+end opdef
+
+mean begin
+    %c
+    $c sum
+    $c len
+    div
+end opdef
+
+median begin
+    sort split
+    %snd %fst
+    $fst len $snd len
+    begin end
+    begin
+        $fst tail $snd head add 2 div
+    end
+    begin
+        $fst tail
+    end
+    test call
+end opdef
+
+sqrt_h begin
+    %it %guess %x
+    $it 0
+    begin
+        $guess
+    end
+    dup
+    begin
+        $x $x $guess div $guess add 2 div $it -1 add sqrt_h
+    end
+    test call
+end opdef
+
+sqrt begin
+    %x
+    $x $x 2 div 100 sqrt_h
+end opdef
+
+ipow begin
+    %pow %x
+    $pow 0
+    begin
+        $x $pow neg ipow inv
+    end
+    begin
+        1
+    end
+    begin
+        $x $x $pow -1 add ipow mul
+    end
+    test call
+end opdef
