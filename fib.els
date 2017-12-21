@@ -4,28 +4,28 @@ begin
     Author: Jack Rosenthal
 end rem
 
-begin
+fib begin
     %n $n 2
     begin $n end
     begin
-        $n -1 add !fib
-        $n -2 add !fib
+        $n -1 add fib
+        $n -2 add fib
         add
     end
     %dup $dup $dup
     test call
-end %fib
+end opdef
 
-0 !fib
-1 !fib
-2 !fib
-3 !fib
-4 !fib
-5 !fib
-6 !fib
-7 !fib
-8 !fib
-9 !fib
-10 !fib
-11 !fib
-12 !fib
+0 fib print
+1 fib print
+2 fib print
+3 fib print
+4 fib print
+5 fib print
+6 fib print
+7 fib print
+8 fib print
+9 fib print
+10 fib print
+11 fib print
+12 fib print
