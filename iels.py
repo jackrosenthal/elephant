@@ -3,13 +3,13 @@
 
 import sys
 import readline
-from elephant import els, build_closures, flatten_closures
+from elephant import els, parse, unparse
 
 def interact():
     els.vars.append({})
 
     def input_hook():
-        readline.insert_text(' '.join(flatten_closures(els.stack)) + (' ' if els.stack else ''))
+        readline.insert_text(' '.join(unparse(els.stack)) + (' ' if els.stack else ''))
         els.stack = []
 
     readline.set_startup_hook(input_hook)
@@ -22,7 +22,7 @@ def interact():
         except KeyboardInterrupt:
             print(file=sys.stderr)
             continue
-        for itm in build_closures(iput.split()):
+        for itm in parse(iput.split()):
             els.push(itm)
 
 if __name__ == '__main__':

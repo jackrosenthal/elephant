@@ -5,24 +5,24 @@ from functools import wraps
 from inspect import signature
 from math import floor
 
-def build_closures(tokens):
+def parse(tokens):
     tokens = iter(tokens)
     result = []
     for t in tokens:
         if t == 'begin':
-            result.append(build_closures(tokens))
+            result.append(parse(tokens))
         elif t == 'end':
             return result
         else:
             result.append(t)
     return result
 
-def flatten_closures(closures):
+def unparse(exprs):
     result = []
-    for itm in closures:
+    for itm in exprs:
         if isinstance(itm, list):
             result.append('begin')
-            result += flatten_closures(itm)
+            result += unparse(itm)
             result.append('end')
         else:
             result.append(str(itm))
@@ -63,7 +63,7 @@ class ElsInterpreter:
         return self.stack.pop()
 
     def exec(self, input_str):
-        self.push(build_closures(input_str.split()))
+        self.push(parse(input_str.split()))
         self.push('call')
 
     def build_op(self, f):
@@ -83,9 +83,9 @@ class ElsInterpreter:
 
 els = ElsInterpreter()
 @els.build_op
-def call(clo):
+def call(lst):
     els.vars.append({})
-    for itm in clo:
+    for itm in lst:
         els.push(itm)
     els.vars.pop()
 
@@ -116,20 +116,20 @@ def sep(v):
     return floor(v), v - floor(v)
 
 @els.build_op
-def _len(clo):
-    return len(clo)
+def _len(lst):
+    return len(lst)
 
 @els.build_op
-def _next(clo):
-    if not clo:
-        return clo, None
-    return clo[:-1], clo[-1]
+def _next(lst):
+    if not lst:
+        return lst, None
+    return lst[:-1], lst[-1]
 
 @els.build_op
-def fnext(clo):
-    if not clo:
-        return None, clo
-    return clo[0], clo[1:]
+def fnext(lst):
+    if not lst:
+        return None, lst
+    return lst[0], lst[1:]
 
 @els.build_op
 def test(v1, v2, less, equal, greater):
@@ -153,11 +153,11 @@ def _getchar():
         return 'EOF'
 
 @els.build_op
-def opdef(opname, clo):
+def opdef(opname, lst):
     if isinstance(opname, list):
         opname = opname[0]
-    def defined_operator(clo=clo):
-        els.push(clo)
+    def defined_operator(lst=lst):
+        els.push(lst)
         els.push('call')
     els.operators[opname] = defined_operator
 
@@ -166,7 +166,7 @@ def load(fn):
     if fn in els.loaded:
         return
     with open(fn + '.els') as f:
-        for itm in build_closures(f.read().split()):
+        for itm in parse(f.read().split()):
             els.push(itm)
     els.loaded.add(fn)
 

@@ -69,7 +69,7 @@ end opdef
 
 begin
     b e range
-    Generate a closure with a sequence of numbers from b to e
+    Generate a list with a sequence of numbers from b to e
 end rem
 range begin
     %e %b $b $e
@@ -87,7 +87,7 @@ end opdef
 
 begin
     reverse_h: helper function for reverse
-    clo begin end reverse_h -> begin end reverse_clo
+    lst begin end reverse_h -> begin end reverse_lst
 end rem
 reverse_h begin
     %r %o
@@ -107,8 +107,8 @@ reverse_h begin
 end opdef
 
 begin
-    reverse: reverse the closure on the top of the stack
-    clo reverse
+    reverse: reverse the list on the top of the stack
+    lst reverse
 end rem
 reverse begin
     begin end reverse_h %r %_ $r
@@ -116,7 +116,7 @@ end opdef
 
 begin
     map_h: helper function for map
-    f clo begin end map_h -> f begin end clo_mapped_with_f
+    f lst begin end map_h -> f begin end lst_mapped_with_f
 end rem
 map_h begin
     %m %o %f
@@ -138,8 +138,8 @@ map_h begin
 end opdef
 
 begin
-    map: apply a closure accross a sequence of elements
-    clo f map -> clo_mapped_with_f
+    map: apply a function accross a sequence of elements
+    lst f map -> lst_mapped_with_f
 end rem
 map begin
     %f %c
@@ -150,20 +150,20 @@ end opdef
 
 begin
     reduce_h: helper for reduce function
-    clo v f reduce_h -> clo_next v_next f
+    lst v f reduce_h -> lst_next v_next f
 end rem
 reduce_h begin
-    %f %v %clo
-    $clo begin end
+    %f %v %lst
+    $lst begin end
     begin
-        $clo next
+        $lst next
         $v
         $f call
         $f reduce_h
     end
     dup
     begin
-        $clo $v $f
+        $lst $v $f
     end
     swap
     test call
@@ -171,33 +171,33 @@ end opdef
 
 begin
     reduce: functional reduction
-    clo f reduce -> v
+    lst f reduce -> v
 end rem
 reduce begin
-    %f %clo
-    $clo next $f reduce_h
+    %f %lst
+    $lst next $f reduce_h
     %_ %v %_
     $v
 end opdef
 
 begin
-    sum: sum a closure
-    clo sum -> v
+    sum: reduce a sequence of elements to its sum
+    lst sum -> v
 end rem
 sum begin
     begin add end reduce
 end opdef
 
 begin
-    product: reduce a closure to its product
-    clo product -> v
+    product: reduce a sequence of elements to its product
+    lst product -> v
 end rem
 product begin
     begin mul end reduce
 end opdef
 
 begin
-    split: chop a closure in half, the first being larger if odd
+    split: chop a list in half, the first being larger if odd
 end rem
 split begin
     begin end begin end split_h
@@ -205,7 +205,7 @@ end opdef
 
 begin
     split_h: helper recursive fuction for split
-    clo_in_progress building_left building_right split -> left right
+    lst_in_progress building_left building_right split -> left right
 end rem
 split_h begin
     %r %l %p
@@ -234,7 +234,7 @@ end opdef
 
 begin
     merge_h: recursive helper for merge
-    clo1 clo2 bulding_clo -> merged_clo
+    lst1 lst2 bulding_lst -> merged_lst
 end rem
 merge_h begin
     %b %2 %1
@@ -250,21 +250,21 @@ merge_h begin
 end opdef
 
 begin
-    sort: sort a closure
+    sort: sort a sequence of elements
     implemented as a MergeSort
-    clo sort -> clo_sorted
+    lst sort -> lst_sorted
     not working quite yet... still a work in progress
 end rem
 sort begin
-    %clo
-    $clo len 2
+    %lst
+    $lst len 2
     begin
         begin length is <2, we're sorted end rem
-        $clo
+        $lst
     end
     begin
         begin sort the two halves and merge end rem
-        $clo split sort sort
+        $lst split sort sort
         merge
     end
     dup
@@ -273,7 +273,7 @@ end opdef
 
 begin
     tail: grab the last element
-    clo tail -> v
+    lst tail -> v
 end rem
 tail begin
     next %t %_ $t
@@ -281,7 +281,7 @@ end opdef
 
 begin
     head: grab the first element
-    clo head -> v
+    lst head -> v
 end rem
 head begin
     fnext %_

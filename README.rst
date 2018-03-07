@@ -1,7 +1,7 @@
 The Elephant Stack (ELS) Programming Language
 ---------------------------------------------
 
-ELS is a concatenative language with lexical (static) scoping. ELS prides
+ELS is a concatenative programming language with dynamic scoping. ELS prides
 itself for having very few builtin operators: most operators are defined in its
 own language (see ``core.els``).
 
